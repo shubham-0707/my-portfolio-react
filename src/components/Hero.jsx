@@ -44,9 +44,7 @@ export default function Hero() {
             <span className="hero-name-sub">{personalData.lastName}</span>
           </motion.h1>
           <motion.div className="hero-role" variants={fadeUp} initial="hidden" animate="visible" custom={2}>
-            <span className="role-prefix">I'm a</span>
-            <span className="role-typing">{typedText}</span>
-            <span className="cursor">|</span>
+            <span className="role-prefix">I'm a </span><span className="role-typing">{typedText}</span><span className="cursor">|</span>
           </motion.div>
           <motion.p className="hero-desc" variants={fadeUp} initial="hidden" animate="visible" custom={3}>
             {personalData.heroDescription}
