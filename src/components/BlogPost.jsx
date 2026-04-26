@@ -21,7 +21,7 @@ function parseMarkdown(md) {
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
     // Links
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     // Unordered lists
     .replace(/^- (.+)$/gm, "<li>$1</li>")
     // Ordered lists
@@ -137,7 +137,7 @@ export default function BlogPost() {
 
       {/* Table of Contents — desktop sidebar */}
       {toc.length > 3 && (
-        <nav className="toc">
+        <nav className="toc" aria-label="Table of Contents">
           <h4>On This Page</h4>
           <ul>
             {toc.map((h) => (
@@ -169,7 +169,7 @@ export default function BlogPost() {
           <h1>{post.title}</h1>
 
           <div className="blog-post-meta">
-            <span>{new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+            <time dateTime={post.date}>{new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</time>
             <span>{post.readTime || "5 min read"}</span>
             {post.tags && post.tags.map((t) => (
               <Link key={t} to={`/blog?tag=${t}`} className="blog-tag">{t}</Link>
@@ -198,7 +198,7 @@ export default function BlogPost() {
               <a
                 href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`${SITE_URL}/blog/${post.slug}`)}`}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 className="share-btn"
                 aria-label="Share on Twitter"
               >
@@ -207,7 +207,7 @@ export default function BlogPost() {
               <a
                 href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${SITE_URL}/blog/${post.slug}`)}`}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 className="share-btn"
                 aria-label="Share on LinkedIn"
               >

@@ -50,15 +50,15 @@ export default function Hero() {
             {personalData.heroDescription}
           </motion.p>
           <motion.div className="hero-cta" variants={fadeUp} initial="hidden" animate="visible" custom={4}>
-            <a href={personalData.newsletter} className="btn btn-primary btn-glow" target="_blank" rel="noopener">
+            <a href={personalData.newsletter} className="btn btn-primary btn-glow" target="_blank" rel="noopener noreferrer">
               <span>The Code Report</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
             <a href="#contact" className="btn btn-glass" onClick={(e) => { e.preventDefault(); document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth", block: "start" }); }}>
               <span>Contact Me</span>
             </a>
-            <a href={personalData.resumeUrl} className="btn btn-ghost" download>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            <a href={personalData.resumeUrl} className="btn btn-ghost" download rel="noopener noreferrer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
               <span>Resume</span>
             </a>
           </motion.div>
@@ -79,7 +79,7 @@ export default function Hero() {
           <div className="hero-photo-container">
             <div className="hero-photo-glow"></div>
             <div className="hero-photo-ring"></div>
-            <img src={personalData.profilePic} alt={personalData.name} className="hero-photo" />
+            <img src={personalData.profilePic} alt="Profile photo of Shubham Singh — Android Developer at PhonePe" className="hero-photo" width="320" height="320" />
             <div className="hero-photo-dot"></div>
             <div className="hero-photo-dot"></div>
             <div className="hero-photo-dot"></div>
@@ -90,7 +90,7 @@ export default function Hero() {
                 key={s.label}
                 href={s.href}
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 className="hero-social-link"
                 aria-label={s.label}
                 whileHover={{ y: -3 }}
@@ -125,6 +125,7 @@ function ScrollGesture() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.5 }}
+          aria-hidden="true"
         >
           <div className="scroll-mouse">
             <motion.div

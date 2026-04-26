@@ -16,13 +16,13 @@ export default function Footer() {
             </span>
             <p>{personalData.name}</p>
           </div>
-          <div className="footer-links">
+          <nav className="footer-links" aria-label="Footer navigation">
             <a href="#home" onClick={(e) => scrollTo(e, "#home")}>Home</a>
             <a href="#journey" onClick={(e) => scrollTo(e, "#journey")}>Journey</a>
             <a href="#skills" onClick={(e) => scrollTo(e, "#skills")}>Skills</a>
             <a href="#blog" onClick={(e) => scrollTo(e, "#blog")}>Blog</a>
             <a href="#contact" onClick={(e) => scrollTo(e, "#contact")}>Contact</a>
-          </div>
+          </nav>
           <div className="footer-bottom">
             <p>&copy; {new Date().getFullYear()} {personalData.name}. Crafted with passion.</p>
           </div>

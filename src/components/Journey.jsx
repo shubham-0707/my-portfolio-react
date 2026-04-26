@@ -39,7 +39,10 @@ function CompanyLogo({ company }) {
       <div className="journey-company-logo">
         <img
           src={meta.logo}
-          alt={company}
+          alt={`${company} logo`}
+          loading="lazy"
+          width="40"
+          height="40"
           onError={(e) => {
             e.target.style.display = "none";
             e.target.nextSibling.style.display = "flex";
@@ -175,8 +178,8 @@ export default function Journey() {
                   <div className="journey-card-accent" />
                   <div className="journey-card-header">
                     <CompanyLogo company={item.company} />
-                    <div className="journey-icon-wrap">{iconMap[item.type]}</div>
-                    <div className="journey-date-badge">{item.date}</div>
+                    <div className="journey-icon-wrap" aria-hidden="true">{iconMap[item.type]}</div>
+                    <time className="journey-date-badge" dateTime={item.date}>{item.date}</time>
                   </div>
                   <h3 className="journey-card-title">{item.title}</h3>
                   <p className="journey-card-company">{item.company}</p>
