@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useSearchParams } from "react-router-dom";
 import { Particles } from "./Hero";
+import SEO from "./SEO";
 
 const containerVariants = {
   hidden: {},
@@ -41,6 +42,12 @@ export default function BlogPage() {
 
   return (
     <main className="blog-page">
+      <SEO
+        title="Blog"
+        description="Technical articles on Android development, Kotlin, Jetpack Compose, career advice, and software engineering by Shubham Singh."
+        url="/blog"
+        type="blog"
+      />
       <Particles count={15} />
 
       {/* Header */}
