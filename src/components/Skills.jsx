@@ -115,6 +115,8 @@ export default function Skills() {
         {/* Category selector tabs */}
         <motion.div
           className="skills-tabs"
+          role="tablist"
+          aria-label="Skill categories"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -126,6 +128,9 @@ export default function Skills() {
               <motion.button
                 key={cat.category}
                 className={`skills-tab ${activeTab === i ? "active" : ""}`}
+                role="tab"
+                aria-selected={activeTab === i}
+                aria-controls={`skills-panel-${i}`}
                 onClick={() => setActiveTab(i)}
                 whileHover={{ y: -2 }}
                 whileTap={{ y: 1, scale: 0.97 }}
@@ -144,7 +149,7 @@ export default function Skills() {
         </motion.div>
 
         {/* Active category display */}
-        <div className="skills-showcase">
+        <div className="skills-showcase" role="tabpanel" id={`skills-panel-${activeTab}`} aria-label={activeCat.category}>
           {/* Left: big radial visualization */}
           <motion.div
             className="skills-radial"

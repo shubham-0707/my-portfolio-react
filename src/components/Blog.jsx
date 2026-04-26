@@ -77,7 +77,7 @@ export default function Blog() {
                   )}
                   <div className="blog-card-body">
                     <div className="blog-card-meta">
-                      <span>{new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+                      <time dateTime={post.date}>{new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</time>
                       <span>{post.readTime || "5 min read"}</span>
                     </div>
                     <h3><Link to={`/blog/${post.slug}`}>{post.title}</Link></h3>

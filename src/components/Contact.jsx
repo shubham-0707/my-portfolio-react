@@ -60,7 +60,7 @@ export default function Contact() {
           <form onSubmit={handleSubmit} className="contact-form glass-card">
             <input type="hidden" name="access_key" value={personalData.web3formsKey} />
             <input type="hidden" name="subject" value="New message from portfolio" />
-            <input type="checkbox" name="botcheck" style={{ display: "none" }} />
+            <input type="checkbox" name="botcheck" style={{ display: "none" }} aria-hidden="true" tabIndex={-1} />
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="name">Name</label>
@@ -75,7 +75,7 @@ export default function Contact() {
               <label htmlFor="message">Message</label>
               <textarea id="message" name="message" rows="6" placeholder="Tell me about your project or just say hi..." required></textarea>
             </div>
-            <button type="submit" className="btn btn-primary btn-glow btn-full" disabled={status === "sending"}>
+            <button type="submit" className="btn btn-primary btn-glow btn-full" disabled={status === "sending"} aria-live="polite">
               {status === "sending" ? (
                 <span>Sending...</span>
               ) : status === "sent" ? (
@@ -85,7 +85,7 @@ export default function Contact() {
               ) : (
                 <>
                   <span>Send Message</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 </>
               )}
             </button>
