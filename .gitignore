@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Images dropped in root
+*.jpeg
+*.jpg
+*.png
+!public/**
