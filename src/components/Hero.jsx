@@ -57,7 +57,7 @@ export default function Hero() {
             <a href="#contact" className="btn btn-glass" onClick={(e) => { e.preventDefault(); document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth", block: "start" }); }}>
               <span>Contact Me</span>
             </a>
-            <a href={personalData.resumeUrl} className="btn btn-ghost" download rel="noopener noreferrer">
+            <a href={personalData.resumeUrl} className="btn btn-primary btn-glow" download rel="noopener noreferrer">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
               <span>Resume</span>
             </a>
