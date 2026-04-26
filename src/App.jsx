@@ -45,7 +45,7 @@ export default function App() {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      <BrowserRouter basename="/my-portfolio-react">
+      <BrowserRouter>
         <ShootingStars />
         <CursorGlow />
         <Navbar />
