@@ -27,7 +27,7 @@ export const personalData = {
   ],
 
   stats: [
-    { count: 4, label: "Years Experience", plus: true },
+    { count: 2.5, label: "Years Experience", plus: true },
     { count: 326, label: "PRs Shipped", plus: true },
     { count: 4300, label: "Newsletter Readers", plus: true },
   ],

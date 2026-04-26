@@ -28,12 +28,14 @@ export default function Counter({ target }) {
     const increment = target / (duration / 16);
     let raf;
 
+    const isDecimal = target % 1 !== 0;
+
     function step() {
       current += increment;
       if (current >= target) {
         setValue(target);
       } else {
-        setValue(Math.floor(current));
+        setValue(isDecimal ? Math.round(current * 10) / 10 : Math.floor(current));
         raf = requestAnimationFrame(step);
       }
     }
