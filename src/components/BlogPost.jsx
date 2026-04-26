@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Particles } from "./Hero";
+import SEO, { blogPostSchema, SITE_URL } from "./SEO";
 
 function parseMarkdown(md) {
   if (!md) return "";
@@ -122,6 +123,16 @@ export default function BlogPost() {
 
   return (
     <main className="blog-post-page">
+      {post && (
+        <SEO
+          title={post.title}
+          description={post.excerpt}
+          url={`/blog/${post.slug}`}
+          type="article"
+          article={{ date: post.date, tags: post.tags }}
+          jsonLd={blogPostSchema(post)}
+        />
+      )}
       <Particles count={10} />
 
       {/* Table of Contents — desktop sidebar */}
@@ -185,7 +196,7 @@ export default function BlogPost() {
             <span>Share this article:</span>
             <div className="share-buttons">
               <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(window.location.href)}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`${SITE_URL}/blog/${post.slug}`)}`}
                 target="_blank"
                 rel="noopener"
                 className="share-btn"
@@ -194,7 +205,7 @@ export default function BlogPost() {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               </a>
               <a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${SITE_URL}/blog/${post.slug}`)}`}
                 target="_blank"
                 rel="noopener"
                 className="share-btn"
