@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist -r https://github.com/shubham-0707/shubham-0707.github.io.git -b main"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",
