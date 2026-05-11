@@ -65,22 +65,22 @@ export const personalData = {
     },
     {
       type: "work",
-      title: "Android Developer Intern",
-      company: "DKG Labs",
-      date: "Feb 2022 — May 2022",
-      description:
-        "First professional experience as an Android developer, working on the Hero Lectro e-bike companion app. Fixed 40+ production bugs spanning Bluetooth connectivity, GPS tracking, and battery monitoring modules. Developed new features including ride history with route visualization using Google Maps SDK, real-time speed/distance dashboard, and push notification system with Firebase Cloud Messaging. Collaborated with senior engineers on REST API integration using Retrofit + OkHttp, implemented offline-first architecture with Room DB, and trained 3 new team members on the project codebase and development workflow.",
-      tags: ["Android", "Java", "Firebase", "Google Maps", "Room", "Retrofit"],
-      current: false,
-    },
-    {
-      type: "work",
       title: "Jr. Associate — Big Data & EDW",
       company: "Celebal Technologies",
       date: "Feb 2023 — Apr 2023",
       description:
         "Intensive cloud and data engineering training program where I earned 3 industry certifications — Microsoft Azure AZ-900 (Cloud Fundamentals), DP-900 (Data Fundamentals), and Databricks Lakehouse Platform. Built automated web scraping pipelines using Selenium WebDriver and BeautifulSoup to extract structured data from 50+ sources. Designed and deployed ETL workflows on Azure Data Factory for transforming raw data into analytics-ready datasets. Gained hands-on experience with Azure Blob Storage, SQL Database, and Databricks notebooks for large-scale data processing.",
       tags: ["Azure", "Selenium", "Databricks", "Python", "ETL", "ADF"],
+      current: false,
+    },
+    {
+      type: "work",
+      title: "Android Developer Intern",
+      company: "DKG Labs",
+      date: "Feb 2022 — May 2022",
+      description:
+        "First professional experience as an Android developer, working on the Hero Lectro e-bike companion app. Fixed 40+ production bugs spanning Bluetooth connectivity, GPS tracking, and battery monitoring modules. Developed new features including ride history with route visualization using Google Maps SDK, real-time speed/distance dashboard, and push notification system with Firebase Cloud Messaging. Collaborated with senior engineers on REST API integration using Retrofit + OkHttp, implemented offline-first architecture with Room DB, and trained 3 new team members on the project codebase and development workflow.",
+      tags: ["Android", "Java", "Firebase", "Google Maps", "Room", "Retrofit"],
       current: false,
     },
     {
