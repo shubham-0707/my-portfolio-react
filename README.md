@@ -33,6 +33,7 @@ src/
   styles/index.css       Theme tokens, button styles, blog typography
 public/
   posts.json             Blog posts (title, date, tags, excerpt, markdown content)
+  privacy/               Privacy policy pages, one HTML file per product
   img/, *.pdf            Profile photo and resume
 prerender.mjs            Renders each route to static HTML after the build
 .github/workflows/       Auto-deploy workflow
@@ -43,6 +44,7 @@ prerender.mjs            Renders each route to static HTML after the build
 - **Profile, experience, skills, achievements:** edit `src/data/personalData.js`.
 - **Blog posts:** add an entry to `public/posts.json`. The `content` field is markdown, and `slug` sets the URL (`/blog/<slug>`). New posts are pre-rendered automatically.
 - **Resume:** replace `public/Shubham_Singh_Resume.pdf`.
+- **Privacy policies:** add `public/privacy/<product>.html`. It's served at `/privacy/<product>.html`. See `public/privacy/README.md`.
 
 ## Running locally
 
