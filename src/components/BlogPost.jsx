@@ -1,8 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Particles } from "./Hero";
 import SEO, { blogPostSchema, SITE_URL } from "./SEO";
+import { formatDate } from "./PostCard";
+import { LinkedInIcon, XIcon } from "./Icons";
 
 function parseMarkdown(md) {
   if (!md) return "";
@@ -73,8 +73,7 @@ export default function BlogPost() {
     fetch("/posts.json")
       .then((r) => r.json())
       .then((posts) => {
-        const found = posts.find((p) => p.slug === slug);
-        setPost(found || null);
+        setPost(posts.find((p) => p.slug === slug) || null);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -82,9 +81,7 @@ export default function BlogPost() {
 
   const htmlContent = useMemo(() => {
     if (!post?.content) return "";
-    let md = post.content;
-    // Add IDs to headings for TOC linking
-    md = md.replace(/^(#{2,3}) (.+)$/gm, (_, hashes, text) => {
+    const md = post.content.replace(/^(#{2,3}) (.+)$/gm, (_, hashes, text) => {
       const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
       return `${hashes} <span id="${id}">${text}</span>`;
     });
@@ -94,135 +91,70 @@ export default function BlogPost() {
   const toc = useMemo(() => (post ? generateTOC(post.content) : []), [post]);
 
   if (loading) {
-    return (
-      <main className="blog-post-page">
-        <div className="container" style={{ paddingTop: "calc(var(--nav-height) + 4rem)", textAlign: "center" }}>
-          <div className="blog-post-skeleton">
-            <div className="skeleton-line skeleton-title" />
-            <div className="skeleton-line skeleton-meta" />
-            <div className="skeleton-line" />
-            <div className="skeleton-line" />
-            <div className="skeleton-line skeleton-short" />
-          </div>
-        </div>
-      </main>
-    );
+    return <main className="mx-auto max-w-3xl px-6 py-24 text-ink-soft">Loading…</main>;
   }
 
   if (!post) {
     return (
-      <main className="blog-post-page">
-        <div className="container" style={{ paddingTop: "calc(var(--nav-height) + 4rem)", textAlign: "center", padding: "8rem 1.5rem" }}>
-          <h2 style={{ marginBottom: "1rem", color: "var(--color-text)" }}>Post Not Found</h2>
-          <p style={{ color: "var(--color-text-light)", marginBottom: "2rem" }}>The blog post you're looking for doesn't exist.</p>
-          <Link to="/blog" className="btn btn-primary">← Back to Blog</Link>
-        </div>
+      <main className="mx-auto max-w-3xl px-6 py-24">
+        <h1 className="text-4xl">Post not found</h1>
+        <p className="mt-4 text-ink-soft">The post you’re looking for doesn’t exist.</p>
+        <Link to="/blog" className="btn-lift btn-ink mt-8">All posts</Link>
       </main>
     );
   }
 
-  return (
-    <main className="blog-post-page">
-      {post && (
-        <SEO
-          title={post.title}
-          description={post.excerpt}
-          url={`/blog/${post.slug}`}
-          type="article"
-          article={{ date: post.date, tags: post.tags }}
-          jsonLd={blogPostSchema(post)}
-        />
-      )}
-      <Particles count={10} />
+  const url = encodeURIComponent(`${SITE_URL}/blog/${post.slug}`);
 
-      {/* Table of Contents — desktop sidebar */}
-      {toc.length > 3 && (
-        <nav className="toc" aria-label="Table of Contents">
-          <h4>On This Page</h4>
-          <ul>
-            {toc.map((h) => (
-              <li key={h.id} className={h.level === 3 ? "toc-sub" : ""}>
-                <a
-                  href={`#${h.id}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.getElementById(h.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }}
-                >
-                  {h.text}
-                </a>
-              </li>
+  return (
+    <main className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:py-24 lg:grid-cols-[minmax(0,1fr)_16rem]">
+      <SEO
+        title={post.title}
+        description={post.excerpt}
+        url={`/blog/${post.slug}`}
+        type="article"
+        article={{ date: post.date, tags: post.tags }}
+        jsonLd={blogPostSchema(post)}
+      />
+      <article className="min-w-0 max-w-3xl">
+        <Link to="/blog" className="link-ink text-ink-soft">All posts</Link>
+        <h1 className="mt-6 text-4xl leading-tight md:text-5xl">{post.title}</h1>
+        <p className="mt-5 text-ink-soft">
+          <time dateTime={post.date}>{formatDate(post.date)}</time>, {post.readTime || "5 min read"}
+        </p>
+        {post.tags?.length > 0 && (
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {post.tags.map((t) => (
+              <li key={t}><Link to={`/blog?tag=${t}`} className="rounded border border-rule bg-paper-deep px-2 py-0.5 text-sm hover:border-ink">{t}</Link></li>
             ))}
           </ul>
+        )}
+        <div className="prose-paper mt-10 border-t-[1.5px] border-ink pt-10" dangerouslySetInnerHTML={{ __html: htmlContent }} />
+        <div className="mt-12 flex flex-wrap items-center gap-4 border-t-[1.5px] border-ink pt-8">
+          <span className="text-ink-soft">Share</span>
+          <a className="btn-lift btn-paper min-h-11 w-11 px-0" aria-label="Share on X" target="_blank" rel="noopener noreferrer"
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${url}`}><XIcon /></a>
+          <a className="btn-lift btn-paper min-h-11 w-11 px-0" aria-label="Share on LinkedIn" target="_blank" rel="noopener noreferrer"
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${url}`}><LinkedInIcon /></a>
+          <a href="https://www.linkedin.com/newsletters/the-code-report-7197864242228678656/" target="_blank" rel="noopener noreferrer" className="btn-lift btn-signal ml-auto whitespace-nowrap">
+            Subscribe to The Code Report
+          </a>
+        </div>
+      </article>
+      {toc.length > 3 && (
+        <nav aria-label="On this page" className="hidden lg:block">
+          <div className="sticky top-24 border-l-[1.5px] border-ink pl-5">
+            <p className="mb-3 font-semibold">On this page</p>
+            <ul className="space-y-2 text-sm">
+              {toc.map((h) => (
+                <li key={h.id} className={h.level === 3 ? "pl-3" : ""}>
+                  <a href={`#${h.id}`} className="text-ink-soft hover:text-ink">{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </nav>
       )}
-
-      <article className="blog-post">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <Link to="/blog" className="back-to-blog">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            Back to all posts
-          </Link>
-
-          <h1>{post.title}</h1>
-
-          <div className="blog-post-meta">
-            <time dateTime={post.date}>{new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</time>
-            <span>{post.readTime || "5 min read"}</span>
-            {post.tags && post.tags.map((t) => (
-              <Link key={t} to={`/blog?tag=${t}`} className="blog-tag">{t}</Link>
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="blog-post-content"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
-        />
-
-        {/* Post footer */}
-        <motion.div
-          className="blog-post-footer"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          <div className="blog-post-share">
-            <span>Share this article:</span>
-            <div className="share-buttons">
-              <a
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`${SITE_URL}/blog/${post.slug}`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="share-btn"
-                aria-label="Share on Twitter"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-              </a>
-              <a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${SITE_URL}/blog/${post.slug}`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="share-btn"
-                aria-label="Share on LinkedIn"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-              </a>
-            </div>
-          </div>
-          <Link to="/blog" className="btn btn-glass">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
-            <span>All Posts</span>
-          </Link>
-        </motion.div>
-      </article>
     </main>
   );
 }

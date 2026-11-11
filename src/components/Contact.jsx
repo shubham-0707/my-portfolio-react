@@ -1,97 +1,84 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { Field, Label, Input, Textarea } from "@headlessui/react";
 import { personalData } from "../data/personalData";
-import { Particles } from "./Hero";
+
+const fieldClass =
+  "mt-2 block w-full rounded-md border-2 border-ink bg-paper px-4 py-3 text-ink placeholder:text-ink-soft/60 focus:outline-none data-[focus]:outline-3 data-[focus]:outline-offset-2 data-[focus]:outline-signal";
 
 export default function Contact() {
   const [status, setStatus] = useState("idle");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const form = e.currentTarget;
     setStatus("sending");
     try {
-      const data = Object.fromEntries(new FormData(e.target));
       const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
       });
       const json = await res.json();
-      if (json.success) {
-        setStatus("sent");
-        e.target.reset();
-        setTimeout(() => setStatus("idle"), 3000);
-      } else throw new Error();
+      if (!json.success) throw new Error();
+      setStatus("sent");
+      form.reset();
     } catch {
       setStatus("error");
-      setTimeout(() => setStatus("idle"), 3000);
     }
   };
 
   return (
-    <section className="section" id="contact">
-      <Particles count={12} />
-      <div className="container">
-        <div className="section-header">
-          <motion.span className="section-tag" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>Say Hello</motion.span>
-          <motion.h2 className="section-title" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>Get in <span className="gradient-text">Touch</span></motion.h2>
-          <motion.p className="section-subtitle" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>Have a project in mind or just want to say hi? Let's talk!</motion.p>
+    <section id="contact" className="ink-band py-20 md:py-28">
+      <div className="mx-auto grid max-w-6xl gap-12 px-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+        <div>
+          <h2 className="text-4xl leading-tight md:text-6xl">Let’s talk.</h2>
+          <p className="mt-6 max-w-md text-lg opacity-80">
+            Hiring for Android, want a code review, or have a question about a post? Write to me.
+          </p>
+          <dl className="mt-10 space-y-4">
+            <div>
+              <dt className="text-sm opacity-60">Email</dt>
+              <dd><a href={`mailto:${personalData.email}`} className="link-ink text-lg">{personalData.email}</a></dd>
+            </div>
+            <div>
+              <dt className="text-sm opacity-60">Based in</dt>
+              <dd className="text-lg">{personalData.location}</dd>
+            </div>
+            <div>
+              <dt className="text-sm opacity-60">1:1 sessions</dt>
+              <dd><a href={personalData.topmate} target="_blank" rel="noopener noreferrer" className="link-ink text-lg">Book on Topmate</a></dd>
+            </div>
+          </dl>
         </div>
 
-        <motion.div className="contact-info-row" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
-          <motion.a
-            href={`mailto:${personalData.email}`}
-            className="contact-pill glass-card"
-            whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <span>{personalData.email}</span>
-          </motion.a>
-          <motion.div
-            className="contact-pill glass-card"
-            whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>{personalData.location}</span>
-          </motion.div>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.7 }}>
-          <form onSubmit={handleSubmit} className="contact-form glass-card">
-            <input type="hidden" name="access_key" value={personalData.web3formsKey} />
-            <input type="hidden" name="subject" value="New message from portfolio" />
-            <input type="checkbox" name="botcheck" style={{ display: "none" }} aria-hidden="true" tabIndex={-1} />
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="name">Name</label>
-                <input type="text" id="name" name="name" placeholder="John Doe" required />
-              </div>
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="john@example.com" required />
-              </div>
-            </div>
-            <div className="form-group">
-              <label htmlFor="message">Message</label>
-              <textarea id="message" name="message" rows="6" placeholder="Tell me about your project or just say hi..." required></textarea>
-            </div>
-            <button type="submit" className="btn btn-primary btn-glow btn-full" disabled={status === "sending"} aria-live="polite">
-              {status === "sending" ? (
-                <span>Sending...</span>
-              ) : status === "sent" ? (
-                <span style={{ color: "#22c55e" }}>Message Sent!</span>
-              ) : status === "error" ? (
-                <span style={{ color: "#ef4444" }}>Failed — try again</span>
-              ) : (
-                <>
-                  <span>Send Message</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                </>
-              )}
+        <form onSubmit={handleSubmit} className="rounded-lg border-2 border-paper bg-paper p-6 text-ink md:p-8" style={{ boxShadow: "var(--shadow-lift-on-ink)" }}>
+          <input type="hidden" name="access_key" value={personalData.web3formsKey} />
+          <input type="hidden" name="subject" value="New message from portfolio" />
+          <input type="checkbox" name="botcheck" className="hidden" aria-hidden="true" tabIndex={-1} />
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field>
+              <Label className="font-medium">Name</Label>
+              <Input name="name" required autoComplete="name" className={fieldClass} />
+            </Field>
+            <Field>
+              <Label className="font-medium">Email</Label>
+              <Input type="email" name="email" required autoComplete="email" className={fieldClass} />
+            </Field>
+          </div>
+          <Field className="mt-5">
+            <Label className="font-medium">Message</Label>
+            <Textarea name="message" rows={5} required className={fieldClass} />
+          </Field>
+          <div className="mt-6 flex flex-wrap items-center gap-4">
+            <button type="submit" disabled={status === "sending"} className="btn-lift btn-signal" style={{ borderColor: "var(--ink)", boxShadow: "var(--shadow-lift)" }}>
+              {status === "sending" ? "Sending…" : "Send message"}
             </button>
-            <p className="form-note">I typically respond within 1-2 business days</p>
-          </form>
-        </motion.div>
+            <p role="status" className="text-sm">
+              {status === "sent" && "Thanks, your message is on its way."}
+              {status === "error" && <span className="text-error">That didn’t send. Try again, or email me directly.</span>}
+            </p>
+          </div>
+        </form>
       </div>
     </section>
   );

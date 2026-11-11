@@ -1,125 +1,76 @@
-import { useState, useEffect, useContext, useRef } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Dialog, DialogPanel } from "@headlessui/react";
 import { personalData } from "../data/personalData";
-import { ThemeContext } from "../App";
+
+const links = [
+  { id: "journey", label: "Experience" },
+  { id: "skills", label: "Skills" },
+  { id: "achievements", label: "Recognition" },
+  { id: "blog", label: "Writing" },
+];
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
-  const [visible, setVisible] = useState(true);
-  const [scrolled, setScrolled] = useState(false);
-  const { theme, toggleTheme } = useContext(ThemeContext);
-  const location = useLocation();
+  const [open, setOpen] = useState(false);
+  const { pathname } = useLocation();
   const navigate = useNavigate();
-  const isHome = location.pathname === "/";
-  const lastScrollY = useRef(0);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-      setScrolled(currentY > 50);
-
-      // Hide/show based on scroll direction (only after scrolling past 80px)
-      if (currentY > 80) {
-        setVisible(currentY < lastScrollY.current || currentY < 100);
-      } else {
-        setVisible(true);
-      }
-      lastScrollY.current = currentY;
-
-      // Active section detection (home page only)
-      if (isHome) {
-        const sections = document.querySelectorAll("section[id]");
-        let current = "home";
-        sections.forEach((sec) => {
-          if (currentY >= sec.offsetTop - 100) current = sec.id;
-        });
-        setActiveSection(current);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isHome]);
-
-  // Always show navbar when menu is open
-  const navVisible = visible || menuOpen;
-
-  const links = [
-    { href: "#home", label: "Home" },
-    { href: "#journey", label: "Journey" },
-    { href: "#skills", label: "Skills" },
-    { href: "#achievements", label: "Achievements" },
-    { href: "#blog", label: "Blog" },
-    { href: "#contact", label: "Contact" },
-  ];
-
-  const scrollTo = (e, href) => {
+  const go = (e, id) => {
     e.preventDefault();
-    setMenuOpen(false);
-
-    if (!isHome) {
+    setOpen(false);
+    const scroll = () => document.getElementById(id)?.scrollIntoView({ block: "start" });
+    if (pathname !== "/") {
       navigate("/");
-      setTimeout(() => {
-        const el = document.querySelector(href);
-        if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" });
-      }, 100);
-      return;
-    }
-
-    const el = document.querySelector(href);
-    if (el) {
-      window.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" });
-    }
+      setTimeout(scroll, 60);
+    } else scroll();
   };
 
   return (
-    <nav className={`nav${scrolled ? " scrolled" : ""}${navVisible ? "" : " nav-hidden"}`}>
-      <div className="nav-container">
-        <Link to="/" className="nav-logo" onClick={() => { setMenuOpen(false); if (isHome) window.scrollTo({ top: 0, behavior: "smooth" }); }}>
-          <span className="logo-text">{personalData.initials}</span>
-          <span className="logo-dot"></span>
+    <header className="sticky top-0 z-40 border-b-[1.5px] border-ink bg-paper">
+      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6" aria-label="Main">
+        <Link to="/" className="font-display text-xl font-semibold whitespace-nowrap">
+          {personalData.name}
         </Link>
-        <button
-          className={`nav-toggle${menuOpen ? " active" : ""}`}
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          <span></span><span></span><span></span>
-        </button>
-        <ul className={`nav-links${menuOpen ? " open" : ""}`}>
+        <ul className="hidden items-center gap-6 md:flex lg:gap-8">
           {links.map((l) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                className={`nav-link${isHome && activeSection === l.href.slice(1) ? " active" : ""}`}
-                onClick={(e) => scrollTo(e, l.href)}
-              >
+            <li key={l.id}>
+              <a href={`/#${l.id}`} onClick={(e) => go(e, l.id)} className="link-ink font-medium">
                 {l.label}
               </a>
             </li>
           ))}
+          <li>
+            <a href="/#contact" onClick={(e) => go(e, "contact")} className="btn-lift btn-signal min-h-10 whitespace-nowrap px-4 text-sm">
+              Get in touch
+            </a>
+          </li>
         </ul>
-        <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
-          {theme === "light" ? (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-            </svg>
-          ) : (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" />
-              <line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" />
-              <line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
-          )}
+        <button
+          type="button"
+          className="btn-lift btn-paper min-h-10 px-3 md:hidden"
+          onClick={() => setOpen(true)}
+          aria-label="Open menu"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
         </button>
-      </div>
-    </nav>
+      </nav>
+
+      <Dialog open={open} onClose={setOpen} className="relative z-50 md:hidden">
+        <div className="fixed inset-0 bg-ink/40" aria-hidden="true" />
+        <DialogPanel className="fixed inset-y-0 right-0 flex w-full max-w-xs flex-col gap-2 border-l-[1.5px] border-ink bg-paper p-6">
+          <button type="button" onClick={() => setOpen(false)} className="btn-lift btn-paper mb-6 min-h-10 self-end px-3" aria-label="Close menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </button>
+          {links.map((l) => (
+            <a key={l.id} href={`/#${l.id}`} onClick={(e) => go(e, l.id)} className="border-b border-rule py-3 font-display text-2xl">
+              {l.label}
+            </a>
+          ))}
+          <a href="/#contact" onClick={(e) => go(e, "contact")} className="btn-lift btn-signal mt-6">
+            Get in touch
+          </a>
+        </DialogPanel>
+      </Dialog>
+    </header>
   );
 }
