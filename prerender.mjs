@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 import { preview } from 'vite';
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -16,7 +16,13 @@ async function prerender() {
   const server = await preview({ preview: { port: 4173, open: false } });
   const baseUrl = 'http://localhost:4173';
 
-  const browser = await puppeteer.launch({ headless: true });
+  // Prefer an explicit path, then the system Chrome; fall back to Puppeteer's bundled download.
+  const systemChrome = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+  const executablePath =
+    process.env.PUPPETEER_EXECUTABLE_PATH || (existsSync(systemChrome) ? systemChrome : undefined);
+  // CI runners (GitHub Actions) need Chrome's sandbox disabled.
+  const args = process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : [];
+  const browser = await puppeteer.launch({ headless: true, executablePath, args });
 
   for (const route of routes) {
     const page = await browser.newPage();
